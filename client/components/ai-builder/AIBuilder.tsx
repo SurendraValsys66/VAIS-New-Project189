@@ -172,7 +172,7 @@ export const AIBuilder: React.FC<AIBuilderProps> = ({ onBack, onGenerateComplete
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4">
+      <div className="flex flex-col items-center justify-center h-screen py-12 px-4 overflow-hidden">
         {/* Greeting Section */}
         <div className="text-center mb-12 mt-8">
           {/* Logo/Icon */}
@@ -200,7 +200,7 @@ export const AIBuilder: React.FC<AIBuilderProps> = ({ onBack, onGenerateComplete
         )}
 
         {/* Input Section */}
-        <div className="w-full max-w-2xl mb-8">
+        <div className="w-full max-w-2xl">
           <div className="flex gap-3">
             <Input
               placeholder="Type your landing page description..."
@@ -229,40 +229,6 @@ export const AIBuilder: React.FC<AIBuilderProps> = ({ onBack, onGenerateComplete
               )}
             </Button>
           </div>
-        </div>
-
-        {/* Action Buttons Grid */}
-        <div className="w-full max-w-2xl grid grid-cols-2 md:grid-cols-5 gap-3">
-          <button
-            onClick={() => setPrompt("Create landing page with modern design and clean code")}
-            className="p-3 border border-gray-200 rounded-lg hover:border-valasys-orange hover:bg-orange-50 transition-colors text-sm font-medium text-gray-700"
-          >
-            💻 Code
-          </button>
-          <button
-            onClick={() => setPrompt("Create educational landing page with learning resources")}
-            className="p-3 border border-gray-200 rounded-lg hover:border-valasys-orange hover:bg-orange-50 transition-colors text-sm font-medium text-gray-700"
-          >
-            📚 Learn
-          </button>
-          <button
-            onClick={() => setPrompt("Create engaging landing page with compelling copy")}
-            className="p-3 border border-gray-200 rounded-lg hover:border-valasys-orange hover:bg-orange-50 transition-colors text-sm font-medium text-gray-700"
-          >
-            ✍️ Write
-          </button>
-          <button
-            onClick={() => setPrompt("Create lifestyle landing page with modern aesthetics")}
-            className="p-3 border border-gray-200 rounded-lg hover:border-valasys-orange hover:bg-orange-50 transition-colors text-sm font-medium text-gray-700"
-          >
-            ✨ Life stuff
-          </button>
-          <button
-            onClick={() => setPrompt("Create landing page to clarify product features")}
-            className="p-3 border border-gray-200 rounded-lg hover:border-valasys-orange hover:bg-orange-50 transition-colors text-sm font-medium text-gray-700"
-          >
-            ❓ Clarify choice
-          </button>
         </div>
       </div>
     </DashboardLayout>
