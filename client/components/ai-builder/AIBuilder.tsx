@@ -172,136 +172,60 @@ export const AIBuilder: React.FC<AIBuilderProps> = ({ onBack, onGenerateComplete
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
-              <div className="w-10 h-10 bg-valasys-orange rounded-xl flex items-center justify-center text-white shadow-lg">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              AI Landing Page Builder
-            </h1>
-            <p className="text-gray-500 mt-1">
-              Describe your landing page idea and let AI generate the perfect design structure for you
-            </p>
-          </div>
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <div className="w-full max-w-3xl px-4">
+          {/* Back Button - Top Left */}
           {onBack && (
-            <Button
-              onClick={onBack}
-              variant="outline"
-              className="rounded-2xl px-6 py-6"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back
-            </Button>
+            <div className="mb-6">
+              <Button
+                onClick={onBack}
+                variant="outline"
+                className="rounded-2xl px-6 py-2"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back
+              </Button>
+            </div>
           )}
-        </div>
 
-        {/* Main Card */}
-        <Card className="border border-gray-100 shadow-lg rounded-3xl max-w-2xl mx-auto w-full">
-          <CardHeader className="bg-gradient-to-r from-valasys-orange/10 to-orange-100/50 border-b">
-            <CardTitle>Describe Your Landing Page</CardTitle>
-            <CardDescription>
-              Tell us about your business, product, or service and we'll create a tailored landing page design
-            </CardDescription>
-          </CardHeader>
+          {/* Error Alert */}
+          {error && (
+            <Alert variant="destructive" className="rounded-xl border-red-200 bg-red-50 mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-          <CardContent className="pt-8 space-y-6">
-            {/* Error Alert */}
-            {error && (
-              <Alert variant="destructive" className="rounded-xl border-red-200 bg-red-50">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+          {/* Centered Textarea with Icon Button */}
+          <div className="relative">
+            <Textarea
+              placeholder="Describe your landing page idea here..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              disabled={isGenerating}
+              className="w-full min-h-64 p-6 rounded-2xl border-2 border-gray-100 focus:ring-valasys-orange focus:border-valasys-orange resize-none text-base focus:border-valasys-orange pr-20"
+            />
 
-            {/* Prompt Input */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Your Idea</label>
-              <Textarea
-                placeholder="Example: A modern SaaS platform for project management with a professional design, featuring a hero section, features showcase, testimonials, and a call-to-action for sign-ups"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                disabled={isGenerating}
-                className="min-h-24 rounded-xl border-gray-100 focus:ring-valasys-orange focus:border-valasys-orange resize-none"
-              />
-              <p className="text-xs text-gray-500">
-                Be specific about your business type, target audience, and key features you want to highlight
-              </p>
-            </div>
-
-            {/* Example Suggestions */}
-            <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <p className="text-sm font-semibold text-blue-900 mb-3">Need ideas? Try describing:</p>
-              <ul className="space-y-1 text-sm text-blue-800">
-                <li>• Your industry/business type and main value proposition</li>
-                <li>• Target audience and their main pain points</li>
-                <li>• Key features or services you want to showcase</li>
-                <li>• Desired tone (professional, creative, friendly, etc.)</li>
-              </ul>
-            </div>
-
-            {/* Generate Button */}
+            {/* Generate Icon Button in Bottom Right */}
             <Button
               onClick={handleGenerateLayout}
               disabled={isGenerating || !prompt.trim()}
+              size="icon"
               className={cn(
-                "w-full py-6 rounded-xl font-bold text-base transition-all shadow-lg",
-                isGenerating
+                "absolute bottom-4 right-4 w-12 h-12 rounded-xl transition-all shadow-lg",
+                isGenerating || !prompt.trim()
                   ? "bg-gray-200 text-gray-600 cursor-not-allowed"
-                  : "bg-valasys-orange hover:bg-valasys-orange/90 text-white shadow-valasys-orange/20"
+                  : "bg-valasys-orange hover:bg-valasys-orange/90 text-white hover:scale-110"
               )}
+              title={isGenerating ? "Generating..." : "Generate Landing Page Design"}
             >
               {isGenerating ? (
-                <>
-                  <Loader className="w-5 h-5 mr-2 animate-spin" />
-                  Generating Your Design...
-                </>
+                <Loader className="w-5 h-5 animate-spin" />
               ) : (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Generate Landing Page Design
-                </>
+                <Sparkles className="w-5 h-5" />
               )}
             </Button>
-          </CardContent>
-        </Card>
-
-        {/* Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto w-full">
-          <Card className="rounded-2xl border-gray-100">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Smart Structure</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                AI analyzes your requirements and creates an optimal page structure with hero, features, and more.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-2xl border-gray-100">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Fully Customizable</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Edit every section, change colors, fonts, and content to match your brand perfectly.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-2xl border-gray-100">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Ready to Publish</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Once happy with your design, publish directly or continue refining with our builder.
-              </p>
-            </CardContent>
-          </Card>
+          </div>
         </div>
       </div>
     </DashboardLayout>
