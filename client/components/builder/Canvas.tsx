@@ -6,8 +6,9 @@ import { useLayout } from "@/hooks/useLayout";
 import { ComponentRenderer } from "./Renderer";
 import { ComponentsPanel } from "./ComponentsPanel";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, Save } from "lucide-react";
+import { ArrowLeft, Copy, Eye, Save } from "lucide-react";
 import { templateLayoutMap } from "@/components/predefine-email-templates/templates";
+import { useToast } from "@/hooks/use-toast";
 
 interface BuilderCanvasProps {
   onBack?: () => void;
@@ -19,6 +20,7 @@ const DEFAULT_LAYOUT: BuilderComponent[] = [];
 
 export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId, initialLayout }) => {
   const [isPreviewMode, setIsPreviewMode] = React.useState(false);
+  const { toast } = useToast();
 
   const layoutConfig = initialLayout
     ? initialLayout
@@ -29,6 +31,21 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
   const { layout, addComponent, moveComponent, updateComponent, removeComponent } = useLayout(
     layoutConfig,
   );
+
+  const handleCopyLayout = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(layout, null, 2));
+      toast({
+        title: "Copied",
+        description: "Editor layout copied to clipboard.",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Unable to copy the editor layout.",
+      });
+    }
+  };
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: DRAG_TYPES.COMPONENT,
@@ -125,6 +142,15 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopyLayout}
+            className="gap-2"
+          >
+            <Copy className="w-4 h-4" />
+            Copy
+          </Button>
           <Button
             variant="outline"
             size="sm"
