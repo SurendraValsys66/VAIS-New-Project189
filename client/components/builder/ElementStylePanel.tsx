@@ -30,6 +30,12 @@ interface StyleState {
   borderWidth: string;
   textAlign: "left" | "center" | "right" | "justify";
   justifyContent: "flex-start" | "center" | "flex-end" | "space-between";
+  backgroundImageUrl: string;
+  backgroundSize: "cover" | "contain" | "auto" | "stretch";
+  backgroundPosition: "top" | "center" | "bottom" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  backgroundRepeat: "repeat" | "no-repeat" | "repeat-x" | "repeat-y";
+  backgroundAttachment: "scroll" | "fixed";
+  backgroundOpacity: string;
 }
 
 interface SpacingState {
@@ -72,6 +78,12 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
     borderWidth: "0",
     textAlign: "left",
     justifyContent: "flex-start",
+    backgroundImageUrl: "",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "scroll",
+    backgroundOpacity: "100",
   });
 
   const [spacing, setSpacing] = React.useState<SpacingState>({
@@ -92,6 +104,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
 
   const [expandedSections, setExpandedSections] = React.useState({
     alignment: true,
+    background: true,
     colors: true,
     sizing: true,
     spacing: true,
@@ -127,6 +140,12 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         borderWidth: props.borderWidth ? String(props.borderWidth) : "0",
         textAlign: props.textAlign || "left",
         justifyContent: props.justifyContent || "flex-start",
+        backgroundImageUrl: props.backgroundImageUrl || "",
+        backgroundSize: props.backgroundSize || "cover",
+        backgroundPosition: props.backgroundPosition || "center",
+        backgroundRepeat: props.backgroundRepeat || "no-repeat",
+        backgroundAttachment: props.backgroundAttachment || "scroll",
+        backgroundOpacity: props.backgroundOpacity ? String(props.backgroundOpacity) : "100",
       });
 
       // Initialize units from component
@@ -495,6 +514,133 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
                     );
                   })}
                 </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Background Section */}
+        <div>
+          <SectionHeader title="Background" section="background" />
+          {expandedSections.background && (
+            <div className="px-4 py-4 space-y-4 bg-gray-50">
+              {/* Background Color */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Color</label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={styles.backgroundColor}
+                    onChange={(e) => handleStyleChange("backgroundColor", e.target.value)}
+                    className="w-10 h-10 rounded border border-gray-300 cursor-pointer"
+                  />
+                  <Input
+                    type="text"
+                    value={styles.backgroundColor}
+                    onChange={(e) => handleStyleChange("backgroundColor", e.target.value)}
+                    className="flex-1 text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Image */}
+              <div className="border-t pt-4">
+                <button className="w-full px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
+                  Add Image
+                </button>
+              </div>
+
+              {/* Image URL */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Image URL</label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    type="text"
+                    value={styles.backgroundImageUrl}
+                    onChange={(e) => handleStyleChange("backgroundImageUrl", e.target.value)}
+                    className="flex-1 text-xs"
+                    placeholder="https://..."
+                  />
+                  <button className="px-2 py-1.5 text-gray-400 hover:text-gray-600">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Background Size */}
+              <div className="border-t pt-4">
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Size</label>
+                <select
+                  value={styles.backgroundSize}
+                  onChange={(e) => handleStyleChange("backgroundSize", e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="cover">Cover</option>
+                  <option value="contain">Contain</option>
+                  <option value="auto">Auto</option>
+                  <option value="stretch">Stretch</option>
+                </select>
+              </div>
+
+              {/* Background Position */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Position</label>
+                <select
+                  value={styles.backgroundPosition}
+                  onChange={(e) => handleStyleChange("backgroundPosition", e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="top">Top</option>
+                  <option value="center">Center</option>
+                  <option value="bottom">Bottom</option>
+                  <option value="top-left">Top Left</option>
+                  <option value="top-right">Top Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="bottom-right">Bottom Right</option>
+                </select>
+              </div>
+
+              {/* Background Repeat */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Repeat</label>
+                <select
+                  value={styles.backgroundRepeat}
+                  onChange={(e) => handleStyleChange("backgroundRepeat", e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="no-repeat">No Repeat</option>
+                  <option value="repeat">Repeat</option>
+                  <option value="repeat-x">Repeat X</option>
+                  <option value="repeat-y">Repeat Y</option>
+                </select>
+              </div>
+
+              {/* Background Attachment */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Attachment</label>
+                <select
+                  value={styles.backgroundAttachment}
+                  onChange={(e) => handleStyleChange("backgroundAttachment", e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="scroll">Scroll</option>
+                  <option value="fixed">Fixed (Parallax)</option>
+                </select>
+              </div>
+
+              {/* Background Opacity */}
+              <div>
+                <label className="text-xs font-semibold text-gray-700 block mb-2">Opacity: {styles.backgroundOpacity}%</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={styles.backgroundOpacity}
+                  onChange={(e) => handleStyleChange("backgroundOpacity", e.target.value)}
+                  className="w-full"
+                />
               </div>
             </div>
           )}
