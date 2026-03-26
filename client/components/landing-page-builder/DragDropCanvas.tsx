@@ -1,8 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
 import { LandingPage, LandingPageBlock, DragItem } from "./types";
 import { DraggableBlock } from "./DraggableBlock";
-import { Trash2 } from "lucide-react";
+import { Copy } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 interface DragDropCanvasProps {
   page: LandingPage;
@@ -23,6 +25,18 @@ export const DragDropCanvas: React.FC<DragDropCanvasProps> = ({
   onDeleteBlock,
   onMoveBlock,
 }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyBlocks = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(page.blocks, null, 2));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy blocks:", error);
+    }
+  };
+
   const [{ isOver }, dropRef] = useDrop(
     () => ({
       accept: ["BLOCK_ITEM"],
@@ -64,29 +78,45 @@ export const DragDropCanvas: React.FC<DragDropCanvasProps> = ({
     return (
       <div
         ref={dropRef}
-        className={`w-full bg-white rounded-lg shadow-md p-8 border-4 border-dashed transition-colors flex flex-col items-center justify-center min-h-96 ${
-          isOver ? "border-valasys-orange bg-orange-50" : "border-gray-300"
+        className={`w-full bg-white rounded-lg shadow-md px-8 py-6 border-2 transition-colors flex flex-col items-center justify-center min-h-20 ${
+          isOver ? "border-valasys-orange bg-orange-50" : "border-gray-200"
         }`}
       >
-        <Trash2 className="w-12 h-12 text-gray-400 mb-3" />
-        <p className="text-gray-600 text-center font-medium">
+        <p className="text-gray-500 text-center text-sm">
           Drag blocks from the sidebar to start building
-        </p>
-        <p className="text-gray-400 text-sm mt-2">
-          Or click "Sections" to add pre-built templates
         </p>
       </div>
     );
   }
 
   return (
-    <div
-      ref={dropRef}
-      className={`w-full space-y-4 transition-all ${
-        isOver ? "bg-orange-50 rounded-lg p-4" : ""
-      }`}
-    >
-      {page.blocks.map((block, index) => renderBlock(block, index))}
+    <div className="relative">
+      <div
+        ref={dropRef}
+        className={`w-full space-y-4 transition-all ${
+          isOver ? "bg-orange-50 rounded-lg p-4" : ""
+        }`}
+      >
+        {page.blocks.map((block, index) => renderBlock(block, index))}
+      </div>
+      {page.blocks.length > 0 && (
+        <div className="absolute top-3 right-3 flex gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-8 w-8 p-0 bg-valasys-orange hover:bg-orange-600 text-white border-0"
+                onClick={handleCopyBlocks}
+                title={copied ? "Copied!" : "Copy blocks"}
+              >
+                <Copy className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{copied ? "Copied!" : "Copy blocks"}</TooltipContent>
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 };
