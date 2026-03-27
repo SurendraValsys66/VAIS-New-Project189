@@ -434,9 +434,10 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
       );
     case "button": {
       const buttonRef = React.useRef<HTMLButtonElement>(null);
+      const isEditingRef = React.useRef(false);
 
       React.useEffect(() => {
-        if (buttonRef.current && buttonRef.current.textContent !== (component.contentText || "Get Started")) {
+        if (buttonRef.current && !isEditingRef.current) {
           buttonRef.current.textContent = component.contentText || "Get Started";
         }
       }, [component.contentText]);
@@ -447,6 +448,13 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             ref={buttonRef}
             contentEditable
             suppressContentEditableWarning
+            onFocus={(e) => {
+              isEditingRef.current = true;
+              // Clear text on focus to start fresh
+              if (e.currentTarget.textContent === "Get Started" && !component.contentText) {
+                e.currentTarget.textContent = "";
+              }
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
@@ -458,10 +466,11 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
               onUpdate(component.id, { contentText: text });
             }}
             onBlur={(e) => {
+              isEditingRef.current = false;
               const text = e.currentTarget.textContent || "";
               if (!text) {
-                e.currentTarget.textContent = component.contentText || "Get Started";
-                onUpdate(component.id, { contentText: component.contentText || "Get Started" });
+                e.currentTarget.textContent = "Get Started";
+                onUpdate(component.id, { contentText: "" });
               }
             }}
             className="px-8 py-6 text-lg font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-0"
