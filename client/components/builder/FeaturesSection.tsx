@@ -350,6 +350,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
             return (
               <div key={element.id} className="relative">
                 <TagName
+                  dir="ltr"
                   className={cn(
                     isHeading
                       ? "text-3xl font-bold text-gray-900 cursor-text p-2 rounded transition-all outline-none"
